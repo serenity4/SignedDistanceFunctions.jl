@@ -18,11 +18,13 @@ sdf(e::Ellipse) = TrueSDF(x -> hypot(((e.center - x) ./ coordinates(e.weights)).
 sdf(s::Sphere) = TrueSDF(x -> hypot((s.center - x)...) - s.radius)
 
 function sdf(b::Box)
-    c = center(b)
-    ccoords = coordinates(c)
-    hs = Iterators.flatten(map(enumerate(b.max - c)) do (i, l)
-        vec = zero(Vec{embeddim(b),coordtype(b)})
-        (HalfSpace(Meshes.setindex(vec, sign, i), sign * ccoords[i] + l) for sign in (-1, 1))
-    end)
-    reduce(intersect, sdf.(hs), init=BooleanSDF(x -> -Inf))
+    function _sdf(x)
+        c = center(b)
+        radii = b.max - c
+        p = x - c
+        z = zero(typeof(p))
+        q = abs.(p) - radii
+        hypot(maximum.(zip(q, z))...) + min(maximum(q), zero(eltype(p)))
+    end
+    TrueSDF(_sdf)
 end
