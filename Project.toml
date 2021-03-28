@@ -3,6 +3,9 @@ uuid = "bf0eba9c-ecd3-4da3-b948-0885808c17e9"
 authors = ["Cédric Belmant"]
 version = "0.1.0"
 
+[deps]
+Meshes = "eacbb407-ea5a-433e-ab97-5258b1ca43fa"
+
 [compat]
 julia = "1.6"
 
